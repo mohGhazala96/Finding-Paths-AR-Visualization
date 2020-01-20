@@ -26,9 +26,31 @@ public class UIManager : MonoBehaviour
         player.gameObject.transform.position = new Vector3(gridMaker.origin.x, player.gameObject.transform.position.y, gridMaker.origin.z);
         solveButton.SetActive(true);
         clearButton.SetActive(false);
+        // dont clear obstacles such that you can view them
     }
+    public void ChangeSearch(int index)
+    {
+        switch (index)
+        {
+            case 0:
+                player.pathFinder.searchMethod = SearchMethod.BFS;
+                break;
+            case 1:
+                player.pathFinder.searchMethod = SearchMethod.DFS;
+                break;
+            case 2:
+                player.pathFinder.searchMethod = SearchMethod.Dijkstra;
+                break;
+            case 3:
+                player.pathFinder.searchMethod = SearchMethod.AStar;
+                break;
+        }
+    }
+    public void GenerateRandomObstacles()
+    {
 
-    public void DropDownIndexChange(int index)
+    }
+    public void ChangeGrid(int index)
     {
         switch (index)
         {

@@ -1,7 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
+public enum SearchMethod
+{
+    BFS,
+    DFS,
+    Dijkstra,
+    AStar
+}
 public class PathFinding : MonoBehaviour
 {
     private const int MOVE_STRAIGHT_COST = 10;
@@ -12,11 +20,11 @@ public class PathFinding : MonoBehaviour
     private List<Cell> openList;
     private List<Cell> closedList;
     public static PathFinding Instance { get; private set; }
-
+    public SearchMethod searchMethod= SearchMethod.BFS;
     public List<Vector3> GetWalkablePath(int endX, int endY)
     {
         grid = gridMaker.grid;
-        List<Cell> validCells = FindPath( endX,  endY);
+        List<Cell> validCells = Dijkstra( endX,  endY);
         if (validCells == null)
         {
             return null;
@@ -32,7 +40,158 @@ public class PathFinding : MonoBehaviour
         }
     }
 
-    public List<Cell> FindPath(int endX, int endY)
+    public List<Cell> BFS(int endX, int endY)
+    {
+        Cell startNode = grid.cells[0, 0];
+        Cell endNode = grid.cells[endX, endY];
+        Queue<Cell> nodesToExamine = new Queue<Cell>();
+        HashSet<Cell> exploredNodes= new HashSet<Cell>();
+        nodesToExamine.Enqueue(startNode);
+        while (nodesToExamine.Count > 0)
+        {
+            //current is green
+            Cell currentNode = nodesToExamine.Dequeue();
+            if (currentNode == endNode)
+            {
+                List<Cell> path = new List<Cell>();
+                while (currentNode != startNode)
+                {
+                    path.Add(currentNode);
+                    currentNode=currentNode.cameFromNode;
+                    // all are green
+
+                }
+
+                path.Reverse();
+                return path;
+
+            }
+
+            List<Cell> NeighbouringCells = GetNeighbourList(currentNode);
+            foreach (Cell cell in NeighbouringCells)
+            {
+                if (!cell.isObstacle&&!exploredNodes.Contains(cell))
+                {
+                    //cell is blue
+                    exploredNodes.Add(cell);
+                    cell.cameFromNode = currentNode;
+                    nodesToExamine.Enqueue(cell);
+
+                }
+            }
+            //currentNode is red
+
+        }
+        return null;
+
+    }
+
+    public List<Cell> DFS(int endX, int endY)
+    {
+        Cell startNode = grid.cells[0, 0];
+        Cell endNode = grid.cells[endX, endY];
+        Stack<Cell> nodesToExamine = new Stack<Cell>();
+        HashSet<Cell> exploredNodes = new HashSet<Cell>();
+        nodesToExamine.Push(startNode);
+        while (nodesToExamine.Count > 0)
+        {
+            //current is green
+            Cell currentNode = nodesToExamine.Pop();
+            
+            if (currentNode == endNode)
+            {
+                List<Cell> path = new List<Cell>();
+                while (currentNode != startNode)
+                {
+                    path.Add(currentNode);
+                    currentNode = currentNode.cameFromNode;
+                    // all are green
+
+                }
+
+                path.Reverse();
+                return path;
+
+            }
+
+            List<Cell> NeighbouringCells = GetNeighbourList(currentNode);
+            foreach (Cell cell in NeighbouringCells)
+            {
+                if (!cell.isObstacle && !exploredNodes.Contains(cell))
+                {
+                    //cell is blue
+                    exploredNodes.Add(cell);
+                    cell.cameFromNode = currentNode;
+                    nodesToExamine.Push(cell);
+
+                }
+            }
+            //currentNode is red
+
+        }
+        return null;
+
+    }
+
+    List<Cell> Dijkstra(int endX, int endY)
+    {
+
+
+        Cell startNode = grid.cells[0, 0];
+        Cell endNode = grid.cells[endX, endY];
+        HashSet<Cell> nodesToExamine = new HashSet<Cell>();
+        IDictionary<Cell, int> distances = new Dictionary<Cell, int>();
+        distances.Add(startNode, 0);
+        foreach(Cell cell in gridMaker.grid.cells)
+        {
+            if (!cell.isObstacle && cell!=startNode)
+            {
+                distances.Add(cell, int.MaxValue);
+                nodesToExamine.Add(cell);
+            }
+        }
+        Cell currentNode = startNode;
+        while (nodesToExamine.Count > 0)
+        {
+            if (currentNode == endNode)
+            {
+                List<Cell> path = new List<Cell>();
+                while (currentNode != startNode)
+                {
+                    path.Add(currentNode);
+                    currentNode = currentNode.cameFromNode;
+                    // all are green
+
+                }
+                path.Reverse();
+                return path;
+            }
+            nodesToExamine.Remove(currentNode);
+            List<Cell> nodes = GetNeighbourList(currentNode);
+
+            //Look at each neighbor to the node
+            foreach (Cell node in nodes)
+            {
+
+                int dist = distances[currentNode] + CalculateDistanceCost(currentNode, node);
+
+                if (dist < distances[node])
+                {
+                    distances[node] = dist;
+                    node.cameFromNode = currentNode;
+
+                }
+            }
+            currentNode = distances.Where(x => nodesToExamine.Contains(x.Key)).OrderBy(x => x.Value).First().Key;
+        }
+
+    
+        return null;
+
+    }
+
+
+    public List<Cell> AStarSearch(int endX, int endY)
     {
         Cell startNode = grid.cells[0,0];
         Cell endNode = grid.cells[endX, endY];
@@ -62,11 +221,10 @@ public class PathFinding : MonoBehaviour
 
         while (openList.Count > 0)
         {
-            Cell currentNode = GetLowestFCostNode(openList);
             // current is green
+            Cell currentNode = GetLowestFCostNode(openList);
             if (currentNode == endNode)
             {
-                // Reached final node
                 // all green
                 // rest are transparent
                 return CalculatePath(endNode);
