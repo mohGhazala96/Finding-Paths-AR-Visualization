@@ -20,12 +20,11 @@ public class GridMaker : MonoBehaviour
 
         // choose from menu
         grid = new Grid(rows,coloumns);
-        //grid.walkableState[0,0]
         for (int i = 0; i < rows; i++)
         {
             for (int j = 0; j < coloumns; j++)
             {
-                Vector3 position = new Vector3(origin.x+(i*sepration), origin.y, origin.z+(j*sepration));
+                Vector3 position = new Vector3(origin.x+(j*sepration), origin.y, origin.z+(i*sepration));
                 grid.cells[i, j].isObstacle = false;
                 gridCells[i, j]=Instantiate(walkableCell, position, Quaternion.identity);
                 gridCells[i, j].name = grid.cells[i, j].ToString();
@@ -36,7 +35,7 @@ public class GridMaker : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0)) // && haven't started editing
         {
 
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -54,7 +53,7 @@ public class GridMaker : MonoBehaviour
                         grid.cells[xPos, yPos].isObstacle = true;
                         Vector3 position = gridCells[xPos, yPos].transform.position;
                         GameObject obstacle = Instantiate(obstacleCell, position, Quaternion.identity);
-                        obstacle.name = xPos + "," + yPos;
+                        obstacle.name = gridCells[xPos, yPos].name;
                     }
                     else
                     {
@@ -62,10 +61,8 @@ public class GridMaker : MonoBehaviour
                         Destroy(selection.gameObject);
                     }
 
-
                 }
             
-
             }
         }
     }
