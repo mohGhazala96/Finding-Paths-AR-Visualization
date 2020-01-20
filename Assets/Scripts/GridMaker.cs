@@ -1,7 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+public enum GameState
+{
+    Solving,
+    Clear
+}
 public class GridMaker : MonoBehaviour
 {
     public Grid grid;
@@ -12,12 +16,26 @@ public class GridMaker : MonoBehaviour
     public int coloumns;
     public Vector3 origin;
     public int sepration;
-
-    void Start()
+    private List<GameObject> allCells;
+    public GameState gameState;
+    private void Start()
     {
+        allCells = new List<GameObject>();
+        Init();
+    }
+    public void Init()
+    {
+        gameState = GameState.Clear;
         origin = Vector3.zero;
         gridCells= new GameObject[rows, coloumns];
-
+        if (allCells.Capacity > 0)
+        {
+            foreach(GameObject cell in allCells)
+            {
+                Destroy(cell);
+            }
+            allCells = new List<GameObject>();
+        }
         // choose from menu
         grid = new Grid(rows,coloumns);
         for (int i = 0; i < rows; i++)
@@ -28,14 +46,16 @@ public class GridMaker : MonoBehaviour
                 grid.cells[i, j].isObstacle = false;
                 gridCells[i, j]=Instantiate(walkableCell, position, Quaternion.identity);
                 gridCells[i, j].name = grid.cells[i, j].ToString();
+                allCells.Add(gridCells[i, j]);
             }
         }
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0)) // && haven't started editing
+        if (Input.GetMouseButtonDown(0)&& gameState.Equals(GameState.Clear)) // && haven't started editing
         {
 
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -53,6 +73,7 @@ public class GridMaker : MonoBehaviour
                         grid.cells[xPos, yPos].isObstacle = true;
                         Vector3 position = gridCells[xPos, yPos].transform.position;
                         GameObject obstacle = Instantiate(obstacleCell, position, Quaternion.identity);
+                        allCells.Add(obstacle);
                         obstacle.name = gridCells[xPos, yPos].name;
                     }
                     else

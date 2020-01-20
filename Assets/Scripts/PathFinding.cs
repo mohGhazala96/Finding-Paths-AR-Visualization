@@ -13,8 +13,6 @@ public class PathFinding : MonoBehaviour
     private List<Cell> closedList;
     public static PathFinding Instance { get; private set; }
 
-
-
     public List<Vector3> GetWalkablePath(int endX, int endY)
     {
         grid = gridMaker.grid;
@@ -61,16 +59,16 @@ public class PathFinding : MonoBehaviour
         startNode.gCost = 0;
         startNode.hCost = CalculateDistanceCost(startNode, endNode);
         startNode.CalculateFCost();
-        //PathfindingDebugStepVisual.Instance.TakeSnapshot(grid, currentNode, openList, closedList);
 
         while (openList.Count > 0)
         {
             Cell currentNode = GetLowestFCostNode(openList);
+            // current is green
             if (currentNode == endNode)
             {
                 // Reached final node
-                //PathfindingDebugStepVisual.Instance.TakeSnapshot(grid, currentNode, openList, closedList);
-
+                // all green
+                // rest are transparent
                 return CalculatePath(endNode);
             }
 
@@ -97,9 +95,10 @@ public class PathFinding : MonoBehaviour
                     if (!openList.Contains(neighbourNode))
                     {
                         openList.Add(neighbourNode);
+                        // make blue
                     }
                 }
-                //PathfindingDebugStepVisual.Instance.TakeSnapshot(grid, currentNode, openList, closedList);
+                // visited red
             }
         }
 

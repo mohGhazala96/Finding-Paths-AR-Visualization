@@ -14,7 +14,6 @@ public class Grid
         for (int i = 0; i < rows; i++){
             for (int j = 0; j < coloumns; j++){
                 cells[i, j] = new Cell(i,j, false);
-
             }
         }
 

@@ -12,18 +12,12 @@ public class Player : MonoBehaviour
             gameObject.transform.position = new Vector3(postion.x, gameObject.transform.position.y, postion.z);
             yield return new WaitForSeconds(1);
         }
-
-  
         yield return null;
     }
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            List<Vector3> positions = pathFinder.GetWalkablePath(4, 4);
 
-            //StartCoroutine(MovePlayer(positions));
-        }
+    public void Move()
+    {
+        List<Vector3> positions = pathFinder.GetWalkablePath(pathFinder.gridMaker.rows-1, pathFinder.gridMaker.rows - 1); 
+        StartCoroutine(MovePlayer(positions));
     }
 }
