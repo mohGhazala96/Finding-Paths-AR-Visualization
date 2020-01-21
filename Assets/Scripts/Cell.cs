@@ -11,6 +11,9 @@ public class Cell
     public int hCost;
     public int fCost;
 
+    public int weight;
+
+
     public bool isObstacle;
     public Cell cameFromNode;
 

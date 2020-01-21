@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6065196452722083083}
   - component: {fileID: 9074250109141197325}
   - component: {fileID: 2092479933635979294}
+  - component: {fileID: 537142787524945938}
   m_Layer: 0
   m_Name: Walkable Cell
   m_TagString: Cell
@@ -92,3 +93,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &537142787524945938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1812045105353395219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc7fa6ecf64384436a9bad81543ff150, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weightText: {fileID: 0}
+  hCostText: {fileID: 0}
+  fCostText: {fileID: 0}
+  gCostText: {fileID: 0}

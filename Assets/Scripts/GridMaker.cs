@@ -72,11 +72,16 @@ public class GridMaker : MonoBehaviour
     }
     void GenerateObstacle(int x,int y)
     {
-        grid.cells[x, y].isObstacle = true;
-        Vector3 position = gridCells[x, y].transform.position;
-        GameObject obstacle = Instantiate(obstacleCell, position, Quaternion.identity);
-        allCells.Add(obstacle);
-        obstacle.name = gridCells[x, y].name;
+        if (!grid.cells[x, y].isObstacle)
+        {
+            grid.cells[x, y].isObstacle = true;
+            Vector3 position = new Vector3(gridCells[x, y].transform.position.x, gridCells[x, y].transform.position.y + Random.Range(2, 5), gridCells[x, y].transform.position.z);
+            GameObject obstacle = Instantiate(obstacleCell, position, Quaternion.identity);
+            StartCoroutine(obstacle.GetComponent<Obstacle>().Drop(obstacle.transform.position, gridCells[x, y].transform.position.y));
+            allCells.Add(obstacle);
+            obstacle.name = gridCells[x, y].name;
+        }
+        
     }
     // Update is called once per frame
     void Update()

@@ -40,6 +40,7 @@ public class PathFinding : MonoBehaviour
                 break;
 
         }
+        // visualise first
         if (validCells == null)
         {
             return null;
