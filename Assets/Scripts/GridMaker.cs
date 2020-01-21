@@ -51,7 +51,33 @@ public class GridMaker : MonoBehaviour
         }
 
     }
+    public void GenerateRandomObstacles()
+    {
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < coloumns; j++)
+            {
+                if (!(i==0 && j==0)&&!(j==coloumns-1 && i==rows-1))
+                {
+                    if (Random.Range(0, 4) == 2)
+                    {
+                        GenerateObstacle(i, j);
 
+                    }
+                }
+                
+
+            }
+        }
+    }
+    void GenerateObstacle(int x,int y)
+    {
+        grid.cells[x, y].isObstacle = true;
+        Vector3 position = gridCells[x, y].transform.position;
+        GameObject obstacle = Instantiate(obstacleCell, position, Quaternion.identity);
+        allCells.Add(obstacle);
+        obstacle.name = gridCells[x, y].name;
+    }
     // Update is called once per frame
     void Update()
     {
@@ -70,11 +96,7 @@ public class GridMaker : MonoBehaviour
                     int yPos = int.Parse(splitArray[1]);
                     if (!grid.cells[xPos, yPos].isObstacle)
                     {
-                        grid.cells[xPos, yPos].isObstacle = true;
-                        Vector3 position = gridCells[xPos, yPos].transform.position;
-                        GameObject obstacle = Instantiate(obstacleCell, position, Quaternion.identity);
-                        allCells.Add(obstacle);
-                        obstacle.name = gridCells[xPos, yPos].name;
+                        GenerateObstacle(xPos, yPos);
                     }
                     else
                     {

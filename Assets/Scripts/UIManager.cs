@@ -8,6 +8,20 @@ public class UIManager : MonoBehaviour
     public Player player;
     public GameObject solveButton;
     public GameObject clearButton;
+    public GameObject errorText;
+    private static UIManager instance;
+
+    public static UIManager Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = GameObject.FindObjectOfType<UIManager>();
+            }
+            return instance;
+        }
+    }
 
     // Start is called before the first frame update
     public void Solve()
@@ -26,10 +40,14 @@ public class UIManager : MonoBehaviour
         player.gameObject.transform.position = new Vector3(gridMaker.origin.x, player.gameObject.transform.position.y, gridMaker.origin.z);
         solveButton.SetActive(true);
         clearButton.SetActive(false);
+        errorText.SetActive(false);
         // dont clear obstacles such that you can view them
     }
     public void ChangeSearch(int index)
     {
+        if (gridMaker.gameState.Equals(GameState.Solving))
+            return;
+
         switch (index)
         {
             case 0:
@@ -48,7 +66,7 @@ public class UIManager : MonoBehaviour
     }
     public void GenerateRandomObstacles()
     {
-
+        gridMaker.GenerateRandomObstacles();
     }
     public void ChangeGrid(int index)
     {

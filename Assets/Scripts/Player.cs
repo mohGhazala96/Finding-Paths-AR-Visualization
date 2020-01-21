@@ -7,11 +7,19 @@ public class Player : MonoBehaviour
     public PathFinding pathFinder;
     IEnumerator MovePlayer(List<Vector3>  positions)
     {
-        foreach (Vector3 postion in positions)
+        if (positions!=null)
         {
-            gameObject.transform.position = new Vector3(postion.x, gameObject.transform.position.y, postion.z);
-            yield return new WaitForSeconds(1);
+            foreach (Vector3 postion in positions)
+            {
+                gameObject.transform.position = new Vector3(postion.x, gameObject.transform.position.y, postion.z);
+                yield return new WaitForSeconds(1);
+            }
         }
+        else
+        {
+            UIManager.Instance.errorText.SetActive(true);
+        }
+        
         yield return null;
     }
 

@@ -19,12 +19,27 @@ public class PathFinding : MonoBehaviour
     private Grid grid;
     private List<Cell> openList;
     private List<Cell> closedList;
-    public static PathFinding Instance { get; private set; }
     public SearchMethod searchMethod= SearchMethod.BFS;
     public List<Vector3> GetWalkablePath(int endX, int endY)
     {
         grid = gridMaker.grid;
-        List<Cell> validCells = Dijkstra( endX,  endY);
+        List<Cell> validCells = null;
+        switch (searchMethod)
+        {
+            case SearchMethod.BFS:
+                validCells = BFS(endX, endY);
+                break;
+            case SearchMethod.DFS:
+                validCells = DFS(endX, endY);
+                break;
+            case SearchMethod.Dijkstra:
+                validCells = Dijkstra(endX, endY);
+                break;
+            case SearchMethod.AStar:
+                validCells = AStarSearch(endX, endY);
+                break;
+
+        }
         if (validCells == null)
         {
             return null;
@@ -150,6 +165,7 @@ public class PathFinding : MonoBehaviour
                 nodesToExamine.Add(cell);
             }
         }
+        //green
         Cell currentNode = startNode;
         while (nodesToExamine.Count > 0)
         {
@@ -172,16 +188,22 @@ public class PathFinding : MonoBehaviour
             //Look at each neighbor to the node
             foreach (Cell node in nodes)
             {
-
-                int dist = distances[currentNode] + CalculateDistanceCost(currentNode, node);
-
-                if (dist < distances[node])
+                if (!node.isObstacle)
                 {
-                    distances[node] = dist;
-                    node.cameFromNode = currentNode;
+                    int dist = distances[currentNode] + CalculateDistanceCost(currentNode, node);
 
+                    if (dist < distances[node])
+                    {
+                        distances[node] = dist;
+                        node.cameFromNode = currentNode;
+                        // blue
+
+                    }
                 }
+
+               
             }
+            //current node red
             currentNode = distances.Where(x => nodesToExamine.Contains(x.Key)).OrderBy(x => x.Value).First().Key;
         }
 
