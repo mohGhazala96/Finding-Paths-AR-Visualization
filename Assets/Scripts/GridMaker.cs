@@ -18,6 +18,7 @@ public class GridMaker : MonoBehaviour
     public Vector3 origin;
     public int sepration;
     private List<GameObject> allCells;
+    public GameObject flag;
     public GameState gameState;
     private void Start()
     {
@@ -50,7 +51,7 @@ public class GridMaker : MonoBehaviour
                 allCells.Add(gridCells[i, j]);
             }
         }
-
+        flag.transform.position = gridCells[rows - 1, rows - 1].transform.position + (0.5f * gridCells[rows - 1, rows - 1].transform.localScale);
     }
     public void GenerateRandomObstacles()
     {
@@ -78,7 +79,8 @@ public class GridMaker : MonoBehaviour
             grid.cells[x, y].isObstacle = true;
             Vector3 position = new Vector3(gridCells[x, y].transform.position.x, gridCells[x, y].transform.position.y + Random.Range(2, 5), gridCells[x, y].transform.position.z);
             GameObject obstacle = Instantiate(obstacleCell, position, Quaternion.identity);
-            StartCoroutine(obstacle.GetComponent<Obstacle>().Drop(obstacle.transform.position, gridCells[x, y].transform.position.y));
+            float cellSize = gridCells[x, y].transform.localScale.y;
+            StartCoroutine(obstacle.GetComponent<Obstacle>().Drop(obstacle.transform.position, gridCells[x, y].transform.position.y + cellSize));
             allCells.Add(obstacle);
             obstacle.name = gridCells[x, y].name;
             gridCells[x, y].GetComponent<MeshRenderer>().enabled = false;
@@ -109,6 +111,7 @@ public class GridMaker : MonoBehaviour
                     {
                         grid.cells[xPos, yPos].isObstacle = false;
                         Destroy(selection.gameObject);
+                        gridCells[xPos, yPos].GetComponent<MeshRenderer>().enabled = true;
                     }
 
                 }

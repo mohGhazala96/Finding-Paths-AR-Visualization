@@ -27,7 +27,7 @@ public class NodeVisual : MonoBehaviour
 
         weightText.gameObject.SetActive(false);
         hCostText.gameObject.SetActive(true);
-        fCostText.gameObject.SetActive(true);
+        gCostText.gameObject.SetActive(true);
         fCostText.gameObject.SetActive(true);
     }
     public void ActivateVisual()
