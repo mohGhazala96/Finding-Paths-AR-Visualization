@@ -5,11 +5,12 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public PathFinding pathFinder;
-    IEnumerator MovePlayer(List<Vector3>  positions)
+    IEnumerator MovePlayer()
     {
-        if (positions!=null)
+        yield return StartCoroutine(pathFinder.GetWalkablePath(pathFinder.gridMaker.rows - 1, pathFinder.gridMaker.rows - 1));
+        if (pathFinder.walkakblePath != null)
         {
-            foreach (Vector3 postion in positions)
+            foreach (Vector3 postion in pathFinder.walkakblePath)
             {
                 gameObject.transform.position = new Vector3(postion.x, gameObject.transform.position.y, postion.z);
                 yield return new WaitForSeconds(1);
@@ -19,13 +20,11 @@ public class Player : MonoBehaviour
         {
             UIManager.Instance.errorText.SetActive(true);
         }
-        
         yield return null;
     }
 
     public void Move()
     {
-        List<Vector3> positions = pathFinder.GetWalkablePath(pathFinder.gridMaker.rows-1, pathFinder.gridMaker.rows - 1); 
-        StartCoroutine(MovePlayer(positions));
+        StartCoroutine(MovePlayer());
     }
 }

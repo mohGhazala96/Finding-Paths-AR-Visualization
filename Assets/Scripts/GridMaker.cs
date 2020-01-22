@@ -4,6 +4,7 @@ using UnityEngine;
 public enum GameState
 {
     Solving,
+    Finished,
     Clear
 }
 public class GridMaker : MonoBehaviour
@@ -80,6 +81,7 @@ public class GridMaker : MonoBehaviour
             StartCoroutine(obstacle.GetComponent<Obstacle>().Drop(obstacle.transform.position, gridCells[x, y].transform.position.y));
             allCells.Add(obstacle);
             obstacle.name = gridCells[x, y].name;
+            gridCells[x, y].GetComponent<MeshRenderer>().enabled = false;
         }
         
     }

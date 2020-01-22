@@ -20,66 +20,62 @@ public class PathFinding : MonoBehaviour
     private List<Cell> openList;
     private List<Cell> closedList;
     public SearchMethod searchMethod= SearchMethod.BFS;
-    public List<Vector3> GetWalkablePath(int endX, int endY)
+    public SearchVisualizer searchVisualizer;
+    List<Cell> finalResultPath;
+    public List<Vector3> walkakblePath;
+    public IEnumerator GetWalkablePath(int endX, int endY)
     {
         grid = gridMaker.grid;
-        List<Cell> validCells = null;
         switch (searchMethod)
         {
             case SearchMethod.BFS:
-                validCells = BFS(endX, endY);
+               yield return StartCoroutine( BFS(endX, endY));
                 break;
             case SearchMethod.DFS:
-                validCells = DFS(endX, endY);
+                yield return StartCoroutine(DFS(endX, endY));
                 break;
             case SearchMethod.Dijkstra:
-                validCells = Dijkstra(endX, endY);
+                yield return StartCoroutine(Dijkstra(endX, endY));
                 break;
             case SearchMethod.AStar:
-                validCells = AStarSearch(endX, endY);
+                yield return StartCoroutine(AStarSearch(endX, endY));
                 break;
 
         }
-        // visualise first
-        if (validCells == null)
+
+        if (finalResultPath == null)
         {
-            return null;
+             yield return null;
         }
         else
         {
             List<Vector3> vectorPath = new List<Vector3>();
-            foreach (Cell cell in validCells)
+            foreach (Cell cell in finalResultPath)
             {
                 vectorPath.Add(gridMaker.gridCells[cell.x, cell.y].gameObject.transform.position);
             }
-            return vectorPath;
+            walkakblePath= vectorPath;
         }
     }
 
-    public List<Cell> BFS(int endX, int endY)
+    IEnumerator BFS(int endX, int endY)
     {
         Cell startNode = grid.cells[0, 0];
         Cell endNode = grid.cells[endX, endY];
         Queue<Cell> nodesToExamine = new Queue<Cell>();
         HashSet<Cell> exploredNodes= new HashSet<Cell>();
         nodesToExamine.Enqueue(startNode);
+        exploredNodes.Add(startNode);
         while (nodesToExamine.Count > 0)
         {
-            //current is green
             Cell currentNode = nodesToExamine.Dequeue();
+            yield return StartCoroutine( searchVisualizer.SetCellToGreen(currentNode));
+
             if (currentNode == endNode)
             {
-                List<Cell> path = new List<Cell>();
-                while (currentNode != startNode)
-                {
-                    path.Add(currentNode);
-                    currentNode=currentNode.cameFromNode;
-                    // all are green
-
-                }
-
-                path.Reverse();
-                return path;
+                gridMaker.gameState = GameState.Finished;
+                yield return CalculatePath(endNode, startNode);
+                yield break;
 
             }
 
@@ -88,45 +84,37 @@ public class PathFinding : MonoBehaviour
             {
                 if (!cell.isObstacle&&!exploredNodes.Contains(cell))
                 {
-                    //cell is blue
+                    yield return  StartCoroutine(searchVisualizer.SetCellToBlue(cell));
                     exploredNodes.Add(cell);
                     cell.cameFromNode = currentNode;
                     nodesToExamine.Enqueue(cell);
-
                 }
             }
-            //currentNode is red
-
+            yield return  StartCoroutine(searchVisualizer.SetCellToRed(currentNode));
         }
-        return null;
+        gridMaker.gameState = GameState.Finished;
+        yield break;
 
     }
 
-    public List<Cell> DFS(int endX, int endY)
+    IEnumerator DFS(int endX, int endY)
     {
         Cell startNode = grid.cells[0, 0];
         Cell endNode = grid.cells[endX, endY];
         Stack<Cell> nodesToExamine = new Stack<Cell>();
         HashSet<Cell> exploredNodes = new HashSet<Cell>();
         nodesToExamine.Push(startNode);
+        exploredNodes.Add(startNode);
+
         while (nodesToExamine.Count > 0)
         {
-            //current is green
             Cell currentNode = nodesToExamine.Pop();
-            
+            yield return StartCoroutine(searchVisualizer.SetCellToGreen(currentNode));
             if (currentNode == endNode)
             {
-                List<Cell> path = new List<Cell>();
-                while (currentNode != startNode)
-                {
-                    path.Add(currentNode);
-                    currentNode = currentNode.cameFromNode;
-                    // all are green
-
-                }
-
-                path.Reverse();
-                return path;
+                gridMaker.gameState = GameState.Finished;
+                yield return CalculatePath(endNode, startNode);
+                yield break;
 
             }
 
@@ -135,21 +123,21 @@ public class PathFinding : MonoBehaviour
             {
                 if (!cell.isObstacle && !exploredNodes.Contains(cell))
                 {
-                    //cell is blue
+                    yield return StartCoroutine(searchVisualizer.SetCellToBlue(cell));
                     exploredNodes.Add(cell);
                     cell.cameFromNode = currentNode;
                     nodesToExamine.Push(cell);
-
                 }
             }
-            //currentNode is red
+            yield return StartCoroutine(searchVisualizer.SetCellToRed(currentNode));
 
         }
-        return null;
+        gridMaker.gameState = GameState.Finished;
+        yield break;
 
     }
 
-    List<Cell> Dijkstra(int endX, int endY)
+    IEnumerator Dijkstra(int endX, int endY)
     {
 
 
@@ -158,72 +146,66 @@ public class PathFinding : MonoBehaviour
         HashSet<Cell> nodesToExamine = new HashSet<Cell>();
         IDictionary<Cell, int> distances = new Dictionary<Cell, int>();
         distances.Add(startNode, 0);
-        foreach(Cell cell in gridMaker.grid.cells)
+        startNode.weight = 0;
+
+        foreach (Cell cell in gridMaker.grid.cells)
         {
             if (!cell.isObstacle && cell!=startNode)
             {
                 distances.Add(cell, int.MaxValue);
                 nodesToExamine.Add(cell);
+                cell.weight = int.MaxValue;
             }
         }
-        //green
+
         Cell currentNode = startNode;
+        yield return StartCoroutine(searchVisualizer.SetCellToGreen(currentNode));
+
         while (nodesToExamine.Count > 0)
         {
+
             if (currentNode == endNode)
             {
-                List<Cell> path = new List<Cell>();
-                while (currentNode != startNode)
-                {
-                    path.Add(currentNode);
-                    currentNode = currentNode.cameFromNode;
-                    // all are green
-
-                }
-                path.Reverse();
-                return path;
+                gridMaker.gameState = GameState.Finished;
+                yield return CalculatePath(endNode, startNode);
+                yield break;
             }
             nodesToExamine.Remove(currentNode);
             List<Cell> nodes = GetNeighbourList(currentNode);
 
-            //Look at each neighbor to the node
             foreach (Cell node in nodes)
             {
                 if (!node.isObstacle)
                 {
                     int dist = distances[currentNode] + CalculateDistanceCost(currentNode, node);
-
+                    node.weight = dist;
                     if (dist < distances[node])
                     {
                         distances[node] = dist;
                         node.cameFromNode = currentNode;
-                        // blue
-
+                        yield return StartCoroutine(searchVisualizer.SetCellToBlue(node));
                     }
                 }
 
                
             }
-            //current node red
+            yield return StartCoroutine(searchVisualizer.SetCellToRed(currentNode));
             currentNode = distances.Where(x => nodesToExamine.Contains(x.Key)).OrderBy(x => x.Value).First().Key;
-        }
+            yield return StartCoroutine(searchVisualizer.SetCellToGreen(currentNode));
 
-    
-        return null;
+        }
+        gridMaker.gameState = GameState.Finished;
+        yield break;
 
     }
 
 
-    public List<Cell> AStarSearch(int endX, int endY)
+    IEnumerator AStarSearch(int endX, int endY)
     {
         Cell startNode = grid.cells[0,0];
         Cell endNode = grid.cells[endX, endY];
 
-        if (startNode == null || endNode == null)
-        {
-            // Invalid Path
-            return null;
-        }
+       
         openList = new List<Cell> { startNode };
         closedList = new List<Cell>();
 
@@ -244,13 +226,14 @@ public class PathFinding : MonoBehaviour
 
         while (openList.Count > 0)
         {
-            // current is green
             Cell currentNode = GetLowestFCostNode(openList);
+            yield return StartCoroutine(searchVisualizer.SetCellToGreen(currentNode));
+
             if (currentNode == endNode)
             {
-                // all green
-                // rest are transparent
-                return CalculatePath(endNode);
+                gridMaker.gameState = GameState.Finished;
+                yield return CalculatePath(endNode,startNode);
+                yield break;
             }
 
             openList.Remove(currentNode);
@@ -276,15 +259,16 @@ public class PathFinding : MonoBehaviour
                     if (!openList.Contains(neighbourNode))
                     {
                         openList.Add(neighbourNode);
-                        // make blue
+                        yield return StartCoroutine(searchVisualizer.SetCellToRed(neighbourNode));
                     }
                 }
-                // visited red
+                yield return StartCoroutine(searchVisualizer.SetCellToRed(currentNode));
+
             }
         }
 
-        // Out of nodes on the openList
-        return null;
+        gridMaker.gameState = GameState.Finished;
+        yield break;
     }
 
     private List<Cell> GetNeighbourList(Cell currentNode) {
@@ -318,16 +302,18 @@ public class PathFinding : MonoBehaviour
         return grid.cells[x, y];
     }
 
-    private List<Cell> CalculatePath(Cell endNode) {
+    IEnumerator CalculatePath(Cell endNode, Cell startNode) {
         List<Cell> path = new List<Cell>();
-        path.Add(endNode);
         Cell currentNode = endNode;
-        while (currentNode.cameFromNode != null) {
-            path.Add(currentNode.cameFromNode);
+        while (currentNode != startNode) {
+            yield return StartCoroutine(searchVisualizer.SetCellToGreen(currentNode));
+            path.Add(currentNode);
             currentNode = currentNode.cameFromNode;
         }
+        yield return StartCoroutine(searchVisualizer.SetCellToGreen(startNode));
         path.Reverse();
-        return path;
+        finalResultPath= path;
+
     }
 
     private int CalculateDistanceCost(Cell a, Cell b) {

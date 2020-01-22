@@ -26,6 +26,9 @@ public class UIManager : MonoBehaviour
     // Start is called before the first frame update
     public void Solve()
     {
+        if (!gridMaker.gameState.Equals(GameState.Clear))
+            return;
+
         player.Move();
         gridMaker.gameState = GameState.Solving;
         solveButton.SetActive(false);
@@ -36,6 +39,9 @@ public class UIManager : MonoBehaviour
     public void Clear()
     {
         gridMaker.gameState = GameState.Clear;
+        player.StopAllCoroutines();
+        gridMaker.StopAllCoroutines();
+        player.pathFinder.StopAllCoroutines();
         gridMaker.Init();
         player.gameObject.transform.position = new Vector3(gridMaker.origin.x, player.gameObject.transform.position.y, gridMaker.origin.z);
         solveButton.SetActive(true);
@@ -45,7 +51,7 @@ public class UIManager : MonoBehaviour
     }
     public void ChangeSearch(int index)
     {
-        if (gridMaker.gameState.Equals(GameState.Solving))
+        if (gridMaker.gameState.Equals(GameState.Solving) || gridMaker.gameState.Equals(GameState.Finished))
             return;
 
         switch (index)
@@ -70,6 +76,8 @@ public class UIManager : MonoBehaviour
     }
     public void ChangeGrid(int index)
     {
+        if (gridMaker.gameState.Equals(GameState.Solving) || gridMaker.gameState.Equals(GameState.Finished))
+            return;
         switch (index)
         {
             case 0:
@@ -92,9 +100,5 @@ public class UIManager : MonoBehaviour
         }
         gridMaker.Init();
     }
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
 }
