@@ -19,6 +19,7 @@ public class SearchVisualizer : MonoBehaviour
         }
 
     }
+
     public IEnumerator SetCellToRed(Cell cell)
     {
         yield return new WaitForSecondsRealtime(delayStep);
@@ -27,6 +28,7 @@ public class SearchVisualizer : MonoBehaviour
         UpdateVisual(gridCell, cell);
         gridCell.GetComponent<NodeVisual>().SetColorRed();
     }
+
     public IEnumerator SetCellToBlue(Cell cell)
     {
         yield return new WaitForSecondsRealtime(delayStep);
@@ -36,6 +38,7 @@ public class SearchVisualizer : MonoBehaviour
         UpdateVisual(gridCell, cell);
         gridCell.GetComponent<NodeVisual>().SetColorBlue();
     }
+
     public IEnumerator SetCellToGreen(Cell cell)
     {
         yield return new WaitForSecondsRealtime(delayStep);

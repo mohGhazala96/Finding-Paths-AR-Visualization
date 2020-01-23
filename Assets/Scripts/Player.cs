@@ -6,44 +6,49 @@ public class Player : MonoBehaviour
 {
     public PathFinding pathFinder;
     public Animator animator;
-    IEnumerator MovePlayer()
+    IEnumerator AnimatePlayer()
     {
         yield return StartCoroutine(pathFinder.GetWalkablePath(pathFinder.gridMaker.rows - 1, pathFinder.gridMaker.rows - 1));
-        if (pathFinder.walkakblePath != null)
+        if(pathFinder.walkakblePath.Count > 0)
         {
             foreach (Vector3 postion in pathFinder.walkakblePath)
             {
+                yield return new WaitForSeconds(1f);
+                gameObject.transform.LookAt(postion);
+                gameObject.transform.localEulerAngles = new Vector3(0, gameObject.transform.localEulerAngles.y, 0);
                 animator.Play("Jump");
-                float time = 1.1f;
+                yield return new WaitForSeconds(0.75f);
+                float time = 1f;
                 Vector3 startPos = gameObject.transform.position;
                 Vector3 endPos = new Vector3(postion.x, gameObject.transform.position.y, postion.z);
-                yield return StartCoroutine(TransitionPlayer(startPos,endPos,time));
+                yield return StartCoroutine(MovePlayer(startPos,endPos,time));
             }
 
         }
-        else
+        else 
         {
             UIManager.Instance.errorText.SetActive(true);
         }
         yield return null;
     }
-    public IEnumerator TransitionPlayer(Vector3 startPos, Vector3 endPos,float time)
+
+    public IEnumerator MovePlayer(Vector3 startPos, Vector3 endPos,float time)
     {
 
-        float rate = 1.0f / time;
+        float rate = 1.5f;
         float timer = 0;
-        while (timer < time)
+        while (timer <= time)
         {
             timer += Time.deltaTime * rate;
             gameObject.transform.position = Vector3.Lerp(startPos, endPos, timer);
             yield return null;
 
         }
-
-
+  
     }
+
     public void Move()
     {
-        StartCoroutine(MovePlayer());
+        StartCoroutine(AnimatePlayer());
     }
 }

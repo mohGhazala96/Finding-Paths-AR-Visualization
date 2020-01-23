@@ -23,7 +23,6 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
     public void Solve()
     {
         if (!gridMaker.gameState.Equals(GameState.Clear))
@@ -47,8 +46,8 @@ public class UIManager : MonoBehaviour
         solveButton.SetActive(true);
         clearButton.SetActive(false);
         errorText.SetActive(false);
-        // dont clear obstacles such that you can view them
     }
+
     public void ChangeSearch(int index)
     {
         if (gridMaker.gameState.Equals(GameState.Solving) || gridMaker.gameState.Equals(GameState.Finished))
@@ -70,10 +69,12 @@ public class UIManager : MonoBehaviour
                 break;
         }
     }
+
     public void GenerateRandomObstacles()
     {
         gridMaker.GenerateRandomObstacles();
     }
+
     public void ChangeGrid(int index)
     {
         if (gridMaker.gameState.Equals(GameState.Solving) || gridMaker.gameState.Equals(GameState.Finished))
