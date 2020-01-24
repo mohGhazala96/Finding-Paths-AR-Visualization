@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
 {
     public PathFinding pathFinder;
     public Animator animator;
+
     IEnumerator AnimatePlayer()
     {
         yield return StartCoroutine(pathFinder.GetWalkablePath(pathFinder.gridMaker.rows - 1, pathFinder.gridMaker.rows - 1));

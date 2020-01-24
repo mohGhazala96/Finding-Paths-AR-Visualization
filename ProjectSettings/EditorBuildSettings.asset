@@ -4,5 +4,12 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
-  m_configObjects: {}
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/3D Scene.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
+  m_configObjects:
+    com.unity.xr.arkit.PlayerSettings: {fileID: 11400000, guid: 18fbc6b0c592f4e359390d5b489608b7,
+      type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: c52bdb2d3be054c3fbdbdebb5febc9a0,
+      type: 2}

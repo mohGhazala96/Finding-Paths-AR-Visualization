@@ -16,10 +16,12 @@ public class GridMaker : MonoBehaviour
     public int rows;
     public int coloumns;
     public Vector3 origin;
-    public int sepration;
+    public float sepration;
     private List<GameObject> allCells;
     public GameObject flag;
+    public GameObject allGameobjects;
     public GameState gameState;
+    public GameObject player;
     private void Start()
     {
         allCells = new List<GameObject>();
@@ -29,7 +31,8 @@ public class GridMaker : MonoBehaviour
     {
         gameState = GameState.Clear;
         origin = Vector3.zero;
-        gridCells= new GameObject[rows, coloumns];
+        allGameobjects.transform.localPosition = Vector3.zero;
+        gridCells = new GameObject[rows, coloumns];
         if (allCells.Capacity > 0)
         {
             foreach(GameObject cell in allCells)
@@ -48,10 +51,15 @@ public class GridMaker : MonoBehaviour
                 grid.cells[i, j].isObstacle = false;
                 gridCells[i, j]=Instantiate(walkableCell, position, Quaternion.identity);
                 gridCells[i, j].name = grid.cells[i, j].ToString();
+                gridCells[i, j].transform.parent = allGameobjects.transform;
+                gridCells[i, j].transform.localScale = Vector3.one;
                 allCells.Add(gridCells[i, j]);
             }
         }
-        flag.transform.position = gridCells[rows - 1, rows - 1].transform.position + (0.5f * gridCells[rows - 1, rows - 1].transform.localScale);
+        Vector3 firstCellPosition = gridCells[0,0].transform.localPosition;
+        player.transform.localPosition = new Vector3(firstCellPosition.x, 1, firstCellPosition.z);
+        flag.transform.localPosition = gridCells[rows - 1, rows - 1].transform.localPosition + (0.5f * gridCells[rows - 1, rows - 1].transform.localScale);
+        allGameobjects.transform.localPosition = new Vector3(-0.15f, 0, -0.15f);
     }
     public void GenerateRandomObstacles()
     {
@@ -77,12 +85,14 @@ public class GridMaker : MonoBehaviour
         if (!grid.cells[x, y].isObstacle)
         {
             grid.cells[x, y].isObstacle = true;
-            Vector3 position = new Vector3(gridCells[x, y].transform.position.x, gridCells[x, y].transform.position.y + Random.Range(2, 5), gridCells[x, y].transform.position.z);
-            GameObject obstacle = Instantiate(obstacleCell, position, Quaternion.identity);
+            Vector3 position = new Vector3(gridCells[x, y].transform.localPosition.x, gridCells[x, y].transform.localPosition.y + Random.Range(2, 5), gridCells[x, y].transform.localPosition.z);
+            GameObject obstacle = Instantiate(obstacleCell, position, Quaternion.identity, allGameobjects.transform);
+
             float cellSize = gridCells[x, y].transform.localScale.y;
             StartCoroutine(obstacle.GetComponent<Obstacle>().Drop(obstacle.transform.position, gridCells[x, y].transform.position.y + cellSize));
             allCells.Add(obstacle);
             obstacle.name = gridCells[x, y].name;
+            obstacle.transform.parent = allGameobjects.transform;
             gridCells[x, y].GetComponent<MeshRenderer>().enabled = false;
         }
         
