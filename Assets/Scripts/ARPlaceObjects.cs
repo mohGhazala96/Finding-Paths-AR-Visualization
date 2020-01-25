@@ -30,7 +30,7 @@ public class ARPlaceObjects : MonoBehaviour
         {
             didPlaceGride = true;
             grid.SetActive(true);
-            placementIndicator.transform.GetChild(0).gameObject.SetActive(false);
+            placementIndicator.transform.GetChild(0).GetChild(0).gameObject.SetActive(false);
 
         }
 

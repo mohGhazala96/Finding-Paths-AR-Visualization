@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -9,8 +10,9 @@ public class UIManager : MonoBehaviour
     public GameObject solveButton;
     public GameObject clearButton;
     public GameObject errorText;
+    public GameObject legend;
     private static UIManager instance;
-
+    public Text legendText; 
     public static UIManager Instance
     {
         get
@@ -42,10 +44,52 @@ public class UIManager : MonoBehaviour
         gridMaker.StopAllCoroutines();
         player.pathFinder.StopAllCoroutines();
         gridMaker.Init();
-        player.gameObject.transform.position = new Vector3(gridMaker.origin.x, player.gameObject.transform.position.y, gridMaker.origin.z);
         solveButton.SetActive(true);
         clearButton.SetActive(false);
         errorText.SetActive(false);
+    }
+    public void ChangeTimePerStep(int index)
+    {
+        if (gridMaker.gameState.Equals(GameState.Solving) || gridMaker.gameState.Equals(GameState.Finished))
+            return;
+
+        switch (index)
+        {
+            case 0:
+                player.pathFinder.searchVisualizer.delayStep = 0.5f;
+                break;
+            case 1:
+                player.pathFinder.searchVisualizer.delayStep = 0.5f/2;
+                break;
+            case 2:
+                player.pathFinder.searchVisualizer.delayStep = 0.5f / 4;
+                break;
+            case 3:
+                player.pathFinder.searchVisualizer.delayStep = 0.5f / 8;
+                break;
+        }
+    }
+
+    public void ChangeSize(int index)
+    {
+        if (gridMaker.gameState.Equals(GameState.Solving) || gridMaker.gameState.Equals(GameState.Finished))
+            return;
+
+        switch (index)
+        {
+            case 0:
+                player.pathFinder.gridMaker.allGameobjects.transform.localScale=Vector3.one;
+                break;
+            case 1:
+                player.pathFinder.gridMaker.allGameobjects.transform.localScale = Vector3.one*2;
+                break;
+            case 2:
+                player.pathFinder.gridMaker.allGameobjects.transform.localScale = Vector3.one*3;
+                break;
+            case 3:
+                player.pathFinder.gridMaker.allGameobjects.transform.localScale = Vector3.one*4;
+                break;
+        }
     }
 
     public void ChangeSearch(int index)
@@ -72,6 +116,8 @@ public class UIManager : MonoBehaviour
 
     public void GenerateRandomObstacles()
     {
+        if (gridMaker.gameState.Equals(GameState.Solving) || gridMaker.gameState.Equals(GameState.Finished))
+            return;
         gridMaker.GenerateRandomObstacles();
     }
 
@@ -100,6 +146,18 @@ public class UIManager : MonoBehaviour
                 break;
         }
         gridMaker.Init();
+    }
+    public void ToggleLegend()
+    {
+        legend.SetActive(!legend.activeInHierarchy);
+        if (!legend.activeInHierarchy)
+        {
+            legendText.text = "Show Legend";
+        }
+        else
+        {
+            legendText.text = "Hide Legend";
+        }
     }
     
 }
