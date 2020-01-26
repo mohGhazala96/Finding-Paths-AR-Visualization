@@ -13,7 +13,9 @@ public class ARPlaceObjects : MonoBehaviour
     bool isPlacementValid;
     bool didPlaceGride;
     public GameObject grid;
-    private void Start()
+	public UIManager uIManager;
+
+	private void Start()
     {
         rayCastMgr = GetComponent<ARRaycastManager>();
     }
@@ -30,9 +32,17 @@ public class ARPlaceObjects : MonoBehaviour
         {
             didPlaceGride = true;
             grid.SetActive(true);
+            uIManager.EnableUI();
+            grid.GetComponent<Animator>().Play("AllObjectsAnim");
+            Invoke("DisableAnimator", 1);
             placementIndicator.transform.GetChild(0).GetChild(0).gameObject.SetActive(false);
 
         }
+
+    }
+    public void DisableAnimator()
+    {
+        grid.GetComponent<Animator>().enabled = false;
 
     }
     public void UpdatePlacementIndicator()

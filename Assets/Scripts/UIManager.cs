@@ -12,7 +12,14 @@ public class UIManager : MonoBehaviour
     public GameObject errorText;
     public GameObject legend;
     private static UIManager instance;
-    public Text legendText; 
+    public Text legendText;
+    public GameObject controlButtons;
+    public Animator controlButtonsAnimator;
+    public Animator legendAnimator;
+    public GameObject toggleControlButton;
+    public GameObject toggleLegendButton;
+    public GameObject tapAnyWhereTitle;
+
     public static UIManager Instance
     {
         get
@@ -24,7 +31,14 @@ public class UIManager : MonoBehaviour
             return instance;
         }
     }
+  
+    public void EnableUI() {
+        toggleControlButton.SetActive(true);
+        toggleLegendButton.SetActive(true);
+        tapAnyWhereTitle.SetActive(false);
 
+    }
+  
     public void Solve()
     {
         if (!gridMaker.gameState.Equals(GameState.Clear))
@@ -74,20 +88,20 @@ public class UIManager : MonoBehaviour
     {
         if (gridMaker.gameState.Equals(GameState.Solving) || gridMaker.gameState.Equals(GameState.Finished))
             return;
-
+        Vector3 oldSize = new Vector3(0.06f, 0.06f, 0.06f);
         switch (index)
         {
             case 0:
-                player.pathFinder.gridMaker.allGameobjects.transform.localScale=Vector3.one;
+                player.pathFinder.gridMaker.allGameobjects.transform.localScale = oldSize;
                 break;
             case 1:
-                player.pathFinder.gridMaker.allGameobjects.transform.localScale = Vector3.one*2;
+                player.pathFinder.gridMaker.allGameobjects.transform.localScale = oldSize * 2;
                 break;
             case 2:
-                player.pathFinder.gridMaker.allGameobjects.transform.localScale = Vector3.one*3;
+                player.pathFinder.gridMaker.allGameobjects.transform.localScale = oldSize * 3;
                 break;
             case 3:
-                player.pathFinder.gridMaker.allGameobjects.transform.localScale = Vector3.one*4;
+                player.pathFinder.gridMaker.allGameobjects.transform.localScale = oldSize * 4;
                 break;
         }
     }
@@ -147,16 +161,37 @@ public class UIManager : MonoBehaviour
         }
         gridMaker.Init();
     }
-    public void ToggleLegend()
+    public void ToggleControlButtons()
     {
-        legend.SetActive(!legend.activeInHierarchy);
-        if (!legend.activeInHierarchy)
+        if (controlButtons.transform.localScale.x > 0)
         {
-            legendText.text = "Show Legend";
+            controlButtonsAnimator.Play("ShrinkControlButtons");
+
         }
         else
         {
+            controlButtonsAnimator.Play("ExpandControlButtons");
+
+        }
+
+
+    }
+
+    public void ToggleLegend()
+    {
+        if (legend.transform.localScale.x > 0)
+        {
             legendText.text = "Hide Legend";
+            legendAnimator.Play("ShrinkLegend");
+        }
+        else
+        {
+
+            legendText.text = "Show Legend";
+            legendAnimator.Play("ExpandLegend");
+
+            
+
         }
     }
     

@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
         {
             foreach (Vector3 postion in pathFinder.walkakblePath)
             {
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(1f);
                 gameObject.transform.LookAt(postion);
                 gameObject.transform.localEulerAngles = new Vector3(0, gameObject.transform.localEulerAngles.y, 0);
                 animator.Play("Jump");
@@ -24,12 +24,12 @@ public class Player : MonoBehaviour
                 Vector3 endPos = new Vector3(postion.x, gameObject.transform.position.y, postion.z);
                 yield return StartCoroutine(MovePlayer(startPos,endPos,time));
             }
-
         }
         else 
         {
             UIManager.Instance.errorText.SetActive(true);
         }
+
         yield return null;
     }
 
