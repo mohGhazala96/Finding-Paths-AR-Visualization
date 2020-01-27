@@ -25,7 +25,7 @@ public class SearchVisualizer : MonoBehaviour
         yield return new WaitForSecondsRealtime(delayStep);
         GridMaker gridMaker = pathFinder.gridMaker;
         GameObject gridCell = gridMaker.gridCells[cell.x, cell.y];
-        UpdateVisual(gridCell, cell);
+        //UpdateVisual(gridCell, cell);
         gridCell.GetComponent<NodeVisual>().SetColorRed();
     }
 
@@ -35,7 +35,7 @@ public class SearchVisualizer : MonoBehaviour
 
         GridMaker gridMaker = pathFinder.gridMaker;
         GameObject gridCell = gridMaker.gridCells[cell.x, cell.y];
-        UpdateVisual(gridCell, cell);
+        //UpdateVisual(gridCell, cell);
         gridCell.GetComponent<NodeVisual>().SetColorBlue();
     }
 
@@ -45,7 +45,7 @@ public class SearchVisualizer : MonoBehaviour
 
         GridMaker gridMaker = pathFinder.gridMaker;
         GameObject gridCell = gridMaker.gridCells[cell.x, cell.y];
-        UpdateVisual(gridCell, cell);
+        //UpdateVisual(gridCell, cell);
         gridCell.GetComponent<NodeVisual>().SetColorGreen();
     }
    
