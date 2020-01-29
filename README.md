@@ -2,7 +2,8 @@
 
 This project uses Unity AR foundation.
 The aim is to visualize various finding paths algorithms (BFS, DFS, Dijkstra,A-Star) in real time at various speeds (Time/step).
-Watch here: https://youtu.be/gPgH5PUekCg
+[Watch here](https://youtu.be/gPgH5PUekCg)
+
 
 ### Features 
 
