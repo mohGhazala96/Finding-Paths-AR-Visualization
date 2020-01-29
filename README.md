@@ -16,6 +16,8 @@ The aim is to visualize various finding paths algorithms (BFS, DFS, Dijkstra,A-S
 6. Control the scale of the gride (Size x1, Size x2, Size x3, Size x4)
 
 ```
+Note: Green tiles represent current nodes or the final path, Red tiles represent visited node, Blue tiles represent nodes to be visited.
+
 ### 2D top down view visulisation of the BFS algorithm 
 
 ![2D top down view](https://github.com/mohGhazala96/Finding-Paths-AR-Visualization/blob/master/2d-top-down-view-bfs.gif)
