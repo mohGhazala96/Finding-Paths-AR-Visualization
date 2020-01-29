@@ -1,4 +1,5 @@
 # Finding-Paths-AR-Visualization
+![AR view](https://github.com/mohGhazala96/Finding-Paths-AR-Visualization/blob/master/Ar-view.gif)
 
 This project uses Unity AR foundation.
 The aim is to visualize various finding paths algorithms (BFS, DFS, Dijkstra,A-Star) in real time at various speeds (Time/step).
@@ -21,7 +22,7 @@ Note: Green tiles represent current nodes or the final path, Red tiles represent
 ### 2D top down view visulisation of the BFS algorithm 
 
 ![2D top down view](https://github.com/mohGhazala96/Finding-Paths-AR-Visualization/blob/master/2d-top-down-view-bfs.gif)
-### 2D top down view visulisation of the A-star algorithm 
+### 2D top down view visulisation of the A-Star algorithm 
 ![2D top down view](https://github.com/mohGhazala96/Finding-Paths-AR-Visualization/blob/master/2d-top-down-view-a-star.gif)
 
 #### At any current node the neigbouring cells are added in the neigbouring cells this ordered:
