@@ -44,6 +44,7 @@ public class GridMaker : MonoBehaviour
             {
                 cell.transform.parent = null;
                 Destroy(cell);
+                allCells.Remove(cell);
             }
         }
         allCells = new List<GameObject>();

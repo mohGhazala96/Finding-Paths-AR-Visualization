@@ -274,6 +274,7 @@ public class PathFinding : MonoBehaviour
     private List<Cell> GetNeighbourList(Cell currentNode) {
         List<Cell> neighbourList = new List<Cell>();
 
+
         if (currentNode.x - 1 >= 0) {
             // Left
             neighbourList.Add(GetNode(currentNode.x - 1, currentNode.y));
