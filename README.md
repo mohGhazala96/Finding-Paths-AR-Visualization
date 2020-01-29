@@ -16,3 +16,18 @@ The aim is to visualize various finding paths algorithms (BFS, DFS, Dijkstra,A-S
 6. Control the scale of the gride (Size x1, Size x2, Size x3, Size x4)
 
 ```
+### 2D top down view visulisation of the BFS algorithm 
+
+![2D top down view](https://github.com/mohGhazala96/Finding-Paths-AR-Visualization/blob/master/2d-top-down-view-bfs.gif)
+### 2D top down view visulisation of the A-star algorithm 
+![2D top down view](https://github.com/mohGhazala96/Finding-Paths-AR-Visualization/blob/master/2d-top-down-view-a-star.gif)
+
+#### At any current node the neigbouring cells are added in the neigbouring cells this ordered:
+* Left
+* Left Down
+* Left Up
+* Right
+* Right Down
+* Right Up
+* Down
+* Up
